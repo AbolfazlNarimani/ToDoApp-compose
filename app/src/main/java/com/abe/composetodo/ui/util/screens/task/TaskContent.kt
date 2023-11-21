@@ -1,4 +1,4 @@
-package com.abe.composetodo.ui.util.screens.task
+  package com.abe.composetodo.ui.util.screens.task
 
 import android.util.Log
 import androidx.compose.foundation.background
@@ -31,9 +31,8 @@ import com.maxkeppeler.sheets.calendar.models.CalendarConfig
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 import com.maxkeppeler.sheets.clock.ClockDialog
 import com.maxkeppeler.sheets.clock.models.ClockSelection
-import java.text.SimpleDateFormat
 
-@OptIn(ExperimentalMaterial3Api::class)
+  @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskContent(
     title: String,
@@ -49,17 +48,20 @@ fun TaskContent(
 ) {
 
     val calenderState = rememberUseCaseState()
-    CalendarDialog(state = calenderState, config = CalendarConfig(monthSelection = true, yearSelection = true,) ,selection = CalendarSelection.Date{
+    CalendarDialog(state = calenderState, config = CalendarConfig(monthSelection = true, yearSelection = true) ,selection = CalendarSelection.Date{
         dateFromCalender ->
-        //val viewFormat = SimpleDateFormat.getDateInstance()
-        //val formattedDate = viewFormat.format(dateFromCalender)
-        Log.d("SELECTED DATE", dateFromCalender.toString())
+        val formattedDate = dateFromCalender.toString()
+        onTimeSelected(formattedDate)
+        Log.d("Selected", formattedDate)
         calenderState.invokeReset()
     })
 
     val clockState = rememberUseCaseState()
     ClockDialog(state = clockState, selection = ClockSelection.HoursMinutes{hours, minutes ->
-        Log.d("SELECTED DATE", "$hours:$minutes")
+        val timeFromClock = "$hours:$minutes"
+        Log.d("SELECTED TIME", "$hours:$minutes")
+        onDateSelected(timeFromClock)
+        clockState.invokeReset()
     })
 
     Column(
@@ -99,11 +101,12 @@ fun TaskContent(
             Row(Modifier.padding(end = 50.dp, start = 50.dp)) {
                 Text(modifier = Modifier
                     //.weight(1F)
-                    .padding(top = 16.dp, end = 15.dp),text = "12:42")
+                    .padding(top = 16.dp, end = 15.dp),text = time)
+
 
                 Text(modifier = Modifier
                     //.weight(1F)
-                    .padding(top = 16.dp, start = 15.dp),text = "7/3/2023")
+                    .padding(top = 16.dp, start = 15.dp),text = date)
             }
 
 
