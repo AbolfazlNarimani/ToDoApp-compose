@@ -1,5 +1,8 @@
 package com.abe.composetodo.ui.theme
 
+import android.provider.CalendarContract.Colors
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 val Purple80 = Color(0xFFD0BCFF)
@@ -14,3 +17,11 @@ val LowPriorityColor = Color(0xFF00c980)
 val mediumPriorityColor = Color(0xFFFFC114)
 val highPriorityColor = Color(0XFFFF4646)
 val nonePriorityColor = Color(0xFFFFFFFF)
+
+val taskItemBackgroundColor
+@Composable
+get() = if (!isSystemInDarkTheme()) Color.White else Color.DarkGray
+
+val Color.topAppBarContentColor:Color
+    @Composable
+    get() = if (!isSystemInDarkTheme()) Color.Red else Color.Red

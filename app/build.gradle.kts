@@ -79,7 +79,7 @@ dependencies {
     //dagger hilt
     implementation("com.google.dagger:hilt-android:2.48")
     kapt("com.google.dagger:hilt-android-compiler:2.48")
-
+    kapt("com.google.dagger:hilt-compiler:2.48")
     // Compose nav
     implementation("androidx.navigation:navigation-compose:2.7.5")
 }

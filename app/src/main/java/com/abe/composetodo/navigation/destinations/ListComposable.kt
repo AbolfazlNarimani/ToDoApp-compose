@@ -7,16 +7,21 @@ import androidx.navigation.navArgument
 import com.abe.composetodo.ui.util.Constants.LIST_ARGUMENT_KEY
 import com.abe.composetodo.ui.util.Constants.LIST_SCREEN
 import com.abe.composetodo.ui.util.screens.list.ListScreen
+import com.abe.composetodo.viewmodels.SharedViewModel
 
 fun NavGraphBuilder.listComposable(
-    navigateToTaskScreen: (Int) -> Unit
-){
+    navigateToTaskScreen: (taskId: Int) -> Unit,
+    sharedViewModel: SharedViewModel
+) {
     composable(
         route = LIST_SCREEN,
-        arguments = listOf(navArgument(LIST_ARGUMENT_KEY){
+        arguments = listOf(navArgument(LIST_ARGUMENT_KEY) {
             type = NavType.StringType
         })
-    ){
-        ListScreen(onFabClicked = navigateToTaskScreen)
+    ) {
+        ListScreen(
+            navigateToTaskScreen = navigateToTaskScreen,
+            sharedViewModel = sharedViewModel
+        )
     }
 }
