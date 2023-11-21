@@ -34,16 +34,20 @@ import com.abe.composetodo.ui.theme.MEDIUM_PADDINGS
 import com.abe.composetodo.ui.theme.PRIORITY_INDICATOR_SIZE
 import com.abe.composetodo.ui.theme.SMALL_PADDING
 import com.abe.composetodo.ui.theme.taskItemBackgroundColor
+import com.abe.composetodo.ui.util.RequestState
 
 @Composable
 fun ListContent(
-    tasks: List<ToDoTask>,
+    tasks: RequestState<List<ToDoTask>>,
     navigateToTaskScreen: (taskId: Int) -> Unit
 ) {
-    if (tasks.isNotEmpty()) {
-        DisplayTasks(tasks = tasks, navigateToTaskScreen = navigateToTaskScreen)
-    } else {
-        EmptyContent()
+    if (tasks is RequestState.Success){
+
+        if (tasks.data.isEmpty()) {
+            EmptyContent()
+        }else {
+            DisplayTasks(tasks = tasks.data, navigateToTaskScreen = navigateToTaskScreen)
+        }
     }
 }
 
@@ -72,7 +76,7 @@ fun TaskItem(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { navigateToTaskScreen(toDoTask.id) }
-            .padding(top = 10.dp)
+            .padding(top = 1.dp)
     ) {
         Surface(
             modifier = Modifier

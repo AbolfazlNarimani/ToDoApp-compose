@@ -10,4 +10,13 @@
     <string name="tasks">Tasks</string>
     <string name="nodata">noData</string>
     <string name="no_task_found">No Task Found</string>
+    <string name="add_task">Add Task</string>
+    <string name="back_arrow">Back Arrow</string>
+    <string name="delete">Delete Task</string>
+    <string name="update">Update Task\n</string>
+    <string name="dropdown_arrow">Dropdown Arrow</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="timepicker">TimePicker</string>
+    <string name="datepicker">DatePicker</string>
 </resources>
