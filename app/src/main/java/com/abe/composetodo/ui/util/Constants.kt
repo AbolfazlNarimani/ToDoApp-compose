@@ -13,4 +13,7 @@ object Constants {
     const val TASK_ARGUMENT_KEY = "taskId"
 
      val PRIORITY_DROP_DOWN_HEIGHT = 60.dp
+
+    const val MAX_TITLE_LENGTH = 20
+    const val SPLASH_SCREEN_DELAY = 3000
 }
