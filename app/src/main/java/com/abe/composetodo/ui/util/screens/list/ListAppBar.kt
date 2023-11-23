@@ -1,9 +1,7 @@
 package com.abe.composetodo.ui.util.screens.list
 
-import android.print.PrintAttributes.Margins
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -14,12 +12,10 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,18 +23,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.abe.composetodo.R
 import com.abe.composetodo.components.PriorityItem
 import com.abe.composetodo.data.modules.Priority
+import com.abe.composetodo.ui.Action
 import com.abe.composetodo.ui.theme.TOP_APP_BAR_HEIGHT
 import com.abe.composetodo.ui.theme.ELEVATION
-import com.abe.composetodo.ui.theme.topAppBarContentColor
 import com.abe.composetodo.ui.util.SearchAppBarState
 import com.abe.composetodo.ui.util.TrailingIconState
 import com.abe.composetodo.viewmodels.SharedViewModel
@@ -55,8 +49,8 @@ fun ListAppBar(
                 onScreenClicked = {
                     sharedViewModel.searchAppBarState.value = SearchAppBarState.OPENED
                 },
-                onSortClicked = {},
-                onDeleteClicked = {sharedViewModel.deleteAllTask()}
+                onSortClicked = {sharedViewModel.persistSortState(priority = it)},
+                onDeleteAllClicked = {sharedViewModel.action.value = Action.DELETE_ALL}
             )
         }
 
@@ -64,12 +58,15 @@ fun ListAppBar(
             SearchAppBar(text = searchTextState,
                 onTextChange = { newText ->
                     sharedViewModel.searchTextState.value = newText
+                    sharedViewModel.searchDatabase(newText)
                 },
                 onCloseClicked = {
                     sharedViewModel.searchAppBarState.value = SearchAppBarState.CLOSED
                     sharedViewModel.searchTextState.value = ""
                 },
-                onSearchClicked = {}
+                onSearchClicked = {
+                    sharedViewModel.searchDatabase(it)
+                }
             )
         }
     }
@@ -78,7 +75,7 @@ fun ListAppBar(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DefaultListAppBar(
-    onScreenClicked: () -> Unit, onSortClicked: (Priority) -> Unit, onDeleteClicked: () -> Unit
+    onScreenClicked: () -> Unit, onSortClicked: (Priority) -> Unit, onDeleteAllClicked: () -> Unit
 ) {
     TopAppBar(title = {
         Text(text = stringResource(R.string.tasks))
@@ -87,7 +84,7 @@ fun DefaultListAppBar(
         //colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = MaterialTheme.colorScheme.background.topAppBarContentColor),
 
         actions = {
-            ListAppBarActions(onScreenClicked, onSortClicked, onDeleteClicked)
+            ListAppBarActions(onScreenClicked, onSortClicked, onDeleteAllClicked)
         })
 }
 

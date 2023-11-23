@@ -16,4 +16,7 @@ object Constants {
 
     const val MAX_TITLE_LENGTH = 20
     const val SPLASH_SCREEN_DELAY = 3000
+
+    const val PREFERENCE_NAME = "todo_preference"
+    const val PREFERENCE_KEY = "sort_state"
 }

@@ -101,12 +101,12 @@ fun TaskContent(
             Row(Modifier.padding(end = 50.dp, start = 50.dp)) {
                 Text(modifier = Modifier
                     //.weight(1F)
-                    .padding(top = 16.dp, end = 15.dp),text = time)
+                    .padding(top = 16.dp, end = 15.dp),text = date)
 
 
                 Text(modifier = Modifier
                     //.weight(1F)
-                    .padding(top = 16.dp, start = 15.dp),text = date)
+                    .padding(top = 16.dp, start = 15.dp),text = time)
             }
 
 
