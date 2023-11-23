@@ -7,14 +7,21 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.res.stringResource
 import com.abe.composetodo.R
+import com.abe.composetodo.ui.Action
 import com.abe.composetodo.ui.util.SearchAppBarState
 import com.abe.composetodo.viewmodels.SharedViewModel
+import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -31,15 +38,25 @@ fun ListScreen(
     val action by sharedViewModel.action
 
     val allTasks by sharedViewModel.allTasks.collectAsState()
+    val searchedTasks by sharedViewModel.searchedTasks.collectAsState()
 
     val searchAppBarState: SearchAppBarState by sharedViewModel.searchAppBarState
     val searchTextState: String by sharedViewModel.searchTextState
 
-    sharedViewModel.handleDatabaseActions(action)
+
+    val snackBarHostState = remember { SnackbarHostState() }
+
+    DisplaySnackBar(
+        snackBarHostState = snackBarHostState,
+        handleDatabaseActions = { sharedViewModel.handleDatabaseActions(action = action) },
+        taskTitle = sharedViewModel.title.value,
+        action = action,
+        onUndoClicked = {sharedViewModel.action.value = it},
+    )
 
     Scaffold(
         content = {
-            ListContent(tasks = allTasks, navigateToTaskScreen = navigateToTaskScreen)
+            ListContent(allTasks = allTasks, navigateToTaskScreen = navigateToTaskScreen, searchAppBarState = searchAppBarState, searchedTasks = searchedTasks)
         },
         floatingActionButton = {
             ListFab(navigateToTaskScreen = navigateToTaskScreen)
@@ -50,9 +67,13 @@ fun ListScreen(
                 searchAppBarState = searchAppBarState,
                 searchTextState = searchTextState
             )
-        }
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackBarHostState)
+        },
     )
 }
+
 
 @Composable
 fun ListFab(
@@ -65,5 +86,56 @@ fun ListFab(
             imageVector = Icons.Filled.Add,
             contentDescription = stringResource(R.string.add_button)
         )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DisplaySnackBar(
+    snackBarHostState: SnackbarHostState,
+    handleDatabaseActions: () -> Unit,
+    taskTitle: String,
+    action: Action,
+    onUndoClicked: (Action) -> Unit,
+) {
+    handleDatabaseActions()
+
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(key1 = action) {
+        if (action != Action.NO_ACTION) {
+            scope.launch {
+                val snackBarResult = snackBarHostState.showSnackbar(
+                    message = setMessage(action = action, taskTitle = taskTitle),
+                    actionLabel = setActionLabel(action = action)
+                )
+                undoDeletedTask(snackBarResult = snackBarResult, action = action, onUndoClicked = onUndoClicked)
+            }
+
+        }
+    }
+}
+
+private fun setActionLabel(action: Action): String {
+    if (action.name == "DELETE") {
+        return "UNDO"
+    }
+    return "OK"
+}
+
+private fun undoDeletedTask(
+    snackBarResult: SnackbarResult,
+    onUndoClicked: (Action) -> Unit,
+    action: Action
+){
+    if (snackBarResult == SnackbarResult.ActionPerformed && action == Action.DELETE) {
+        onUndoClicked(Action.UNDO)
+    }
+}
+
+private fun setMessage(action: Action, taskTitle: String): String {
+    return when (action) {
+        Action.DELETE_ALL -> "All Tasks Removed."
+        else -> "${action.name}: $taskTitle"
     }
 }

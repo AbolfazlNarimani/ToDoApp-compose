@@ -4,14 +4,10 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -35,19 +31,39 @@ import com.abe.composetodo.ui.theme.PRIORITY_INDICATOR_SIZE
 import com.abe.composetodo.ui.theme.SMALL_PADDING
 import com.abe.composetodo.ui.theme.taskItemBackgroundColor
 import com.abe.composetodo.ui.util.RequestState
+import com.abe.composetodo.ui.util.SearchAppBarState
 
 @Composable
 fun ListContent(
-    tasks: RequestState<List<ToDoTask>>,
-    navigateToTaskScreen: (taskId: Int) -> Unit
+    allTasks: RequestState<List<ToDoTask>>,
+    searchedTasks: RequestState<List<ToDoTask>>,
+    navigateToTaskScreen: (taskId: Int) -> Unit,
+    searchAppBarState: SearchAppBarState
 ) {
-    if (tasks is RequestState.Success){
-
-        if (tasks.data.isEmpty()) {
-            EmptyContent()
-        }else {
-            DisplayTasks(tasks = tasks.data, navigateToTaskScreen = navigateToTaskScreen)
+    if (searchAppBarState == SearchAppBarState.TRIGGERED) {
+        if (searchedTasks is RequestState.Success) {
+            HandelListContent(
+                tasks = searchedTasks.data,
+                navigateToTaskScreen = navigateToTaskScreen
+            )
         }
+    } else {
+       if (allTasks is RequestState.Success) {
+           HandelListContent(
+               tasks = allTasks.data,
+               navigateToTaskScreen = navigateToTaskScreen
+           )
+       }
+    }
+}
+
+@Composable
+fun HandelListContent(tasks: List<ToDoTask>, navigateToTaskScreen: (taskId: Int) -> Unit) {
+
+    if (tasks.isEmpty()) {
+        EmptyContent()
+    }else {
+        DisplayTasks(tasks = tasks, navigateToTaskScreen = navigateToTaskScreen)
     }
 }
 
