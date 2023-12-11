@@ -9,3 +9,4 @@ val SMALL_PADDING = 6.dp
 val PRIORITY_INDICATOR_SIZE = 16.dp
 val TOP_APP_BAR_HEIGHT = 56.dp
 val ELEVATION = 4.dp
+val padding24 = 24.dp

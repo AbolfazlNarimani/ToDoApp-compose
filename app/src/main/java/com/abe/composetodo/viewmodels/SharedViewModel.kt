@@ -234,7 +234,7 @@ class SharedViewModel @Inject constructor(
     }
 
     fun updateTaskFields(selectedTask: ToDoTask?) {
-        if (selectedTask != null) {
+        if (selectedTask != null && selectedTask.id != -1) {
             id.value = selectedTask.id
             title.value = selectedTask.title
             description.value = selectedTask.description
@@ -259,6 +259,15 @@ class SharedViewModel @Inject constructor(
 
     fun validateFields(): Boolean {
         return title.value.isNotEmpty() && description.value.isNotEmpty() && date.value.isNotEmpty() && time.value.isNotEmpty()
+    }
+
+    fun clearTaskFields() {
+        id.value = 0
+        title.value = ""
+        description.value = ""
+        priority.value = Priority.LOW
+        time.value = ""
+        date.value = ""
     }
 
 }
